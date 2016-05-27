@@ -40,6 +40,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.title = @"Path Style Menu";
     // Do any additional setup after loading the view, typically from a nib.
     
     [self createAwesomeMenu];
@@ -65,18 +66,36 @@
                 vc = [[SettingViewController alloc] init];
             }
             else {
-                vc = [[DetailViewController alloc] init];
+                DetailViewController* dvc = [[DetailViewController alloc] init];
+                dvc.nTitle = [menus[index] stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+                vc = dvc;
             }
             
             if (vc) {
-                vc.title = menus[index];
                 [self.navigationController pushViewController:vc animated:YES];
             }
         }];
         [items addObject:item];
     }
     
-    self.awesomeMenu = [[FBAwesomeMenu alloc] initWithFrame:self.view.bounds menuItems:items style:FBAwesomeMenuStyleCircle];
+    __weak typeof(self) weakSelf = self;
+    self.awesomeMenu = [[FBAwesomeMenu alloc] initWithFrame:self.view.bounds menuItems:items style:FBAwesomeMenuStyleCircle animComplete:^(BOOL isExpand) {
+        
+        if (!isExpand) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            //--restore btn
+            if (strongSelf.btn.showMenu == YES) {
+                strongSelf.btn.showMenu = NO;
+            }
+            
+            [UIView animateWithDuration:.2 animations:^{
+                strongSelf.btn.center = _mOrigMenuItemCenter;
+                strongSelf.awesomeMenu.hidden = YES;
+            } completion:^(BOOL finished) {
+                strongSelf.btnBottomConstraint.constant = 84;
+            }];
+        }
+    }];
     self.awesomeMenu.backgroundColor = [UIColor lightGrayColor];
     self.awesomeMenu.alpha = .8;
     self.awesomeMenu.hidden = YES;
@@ -102,7 +121,6 @@
     FBCrossButton* cb = (FBCrossButton*)sender;
     [cb setShowMenu:!cb.showMenu];
     
-    
     if (cb.showMenu) {
         CGPoint p = CGPointMake(_mOrigMenuItemCenter.x, CGRectGetHeight(self.view.bounds)-50);
         [UIView animateWithDuration:.2 animations:^{
@@ -110,20 +128,11 @@
             self.awesomeMenu.hidden = NO;
         } completion:^(BOOL finished) {
             self.btnBottomConstraint.constant = CGRectGetHeight(self.view.bounds)-p.y-CGRectGetHeight(self.btn.frame)/2;
-            [self.awesomeMenu showMenuWithAnimCompleteBlock:^{
-                
-            }];
+            [self.awesomeMenu showMenu];
         }];
     }
     else {
-        [self.awesomeMenu hideMenuWithAnimCompleteBlock:^{
-            [UIView animateWithDuration:.2 animations:^{
-                self.btn.center = _mOrigMenuItemCenter;
-                self.awesomeMenu.hidden = YES;
-            } completion:^(BOOL finished) {
-                self.btnBottomConstraint.constant = 84;
-            }];
-        }];
+        [self.awesomeMenu hideMenu];
     }
 }
 @end

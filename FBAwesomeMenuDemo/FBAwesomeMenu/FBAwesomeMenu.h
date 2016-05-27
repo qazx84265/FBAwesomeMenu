@@ -15,6 +15,7 @@ typedef NS_ENUM(NSInteger, FBAwesomeMenuStyle) {
 };
 
 typedef void (^animCompleteBlock)();
+typedef void (^animationCompleteBlock)(BOOL isExpand);
 //typedef void (^didMenuItemSelect)(NSInteger index);
 
 @interface FBAwesomeMenu : UIView
@@ -25,17 +26,18 @@ typedef void (^animCompleteBlock)();
 
 @property (nonatomic, assign) FBAwesomeMenuStyle style;
 
-@property (nonatomic, copy) animCompleteBlock comBlk;
+@property (nonatomic, copy) animationCompleteBlock completeBlk;
 
 //@property (nonatomic, copy) didMenuItemSelect selectBlk;
 
 
-- (void)showMenuWithAnimCompleteBlock:(animCompleteBlock)completeBlk;
+- (void)showMenu;
 
-- (void)hideMenuWithAnimCompleteBlock:(animCompleteBlock)completeBlk;
+- (void)hideMenu;
 
 - (instancetype)initWithFrame:(CGRect)frame
                     menuItems:(NSArray<FBAwesomeMenuItem*>*)items
-                        style:(FBAwesomeMenuStyle)style;
+                        style:(FBAwesomeMenuStyle)style
+                 animComplete:(animationCompleteBlock)complete;
 
 @end

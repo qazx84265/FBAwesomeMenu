@@ -25,6 +25,7 @@
 
 @interface FBAwesomeMenu(){
     CGPoint _mOrigMenuItemCenter;
+    BOOL _mIsAnimationFinish;
 }
 @property (nonatomic, strong) CAShapeLayer* innerLayer;
 @property (nonatomic, strong) CAShapeLayer* outerLayer;
@@ -39,14 +40,17 @@
 
 - (instancetype)initWithFrame:(CGRect)frame
                     menuItems:(NSArray<FBAwesomeMenuItem *> *)items
-                        style:(FBAwesomeMenuStyle)style {
+                        style:(FBAwesomeMenuStyle)style
+                 animComplete:(animationCompleteBlock)complete{
     if (self = [super initWithFrame:frame]) {
 
         [self commonInit];
         
         self.menuItems = [items copy];
         self.style = style;
-        
+        if (complete) {
+            self.completeBlk = [complete copy];
+        }
     }
     
     return self;
@@ -64,6 +68,8 @@
 - (void)commonInit {
     self.menuItems = [NSArray new];
     self.style = FBAwesomeMenuStyleCircle;
+    self.hideWhenTapOutsideMenu = YES;
+    _mIsAnimationFinish = NO;
 }
 
 
@@ -130,19 +136,18 @@
 }
 */
 
-- (void)showMenuWithAnimCompleteBlock:(animCompleteBlock)completeBlk {
-    if (completeBlk) {
-        self.comBlk = [completeBlk copy];
-    }
+- (void)showMenu {
     
-    if (self.style == FBAwesomeMenuStyleCircle) {
-        CGPoint p = CGPointMake(0, CGRectGetMaxY(self.bounds));
-        [UIView animateWithDuration:0.3 delay:0.1 options:UIViewAnimationOptionTransitionNone animations:^{
-            for (int i=0; i<self.menuItems.count; i++) {
-                FBAwesomeMenuItem* item = [self.menuItems objectAtIndex:i];
-                
-                CGFloat nx = 0.0;
-                CGFloat ny = 0.0;
+    CGPoint p = CGPointMake(0, CGRectGetMaxY(self.bounds));
+    [UIView animateWithDuration:0.3 delay:0.1 options:UIViewAnimationOptionTransitionNone animations:^{
+        
+        for (int i=0; i<self.menuItems.count; i++) {
+            
+            FBAwesomeMenuItem* item = [self.menuItems objectAtIndex:i];
+            
+            CGFloat nx = 0.0;
+            CGFloat ny = 0.0;
+            if (self.style == FBAwesomeMenuStyleCircle) {
                 if (i < kInnerMenuItemCount) {
                     nx = p.x + kInnerMenuRadius * cos(-(kInnerEdgeAngle+i*kInnerMenuItemAngle)*M_PI/180);
                     ny = p.y + kInnerMenuRadius * sin(-(kInnerEdgeAngle+i*kInnerMenuItemAngle)*M_PI/180);
@@ -151,16 +156,23 @@
                     nx = p.x + kOuterMenuRadius * cos(-(kOuterEdgeAngle+(i-kInnerMenuItemCount)*kOuterMenuItemAngle)*M_PI/180);
                     ny = p.y + kOuterMenuRadius * sin(-(kOuterEdgeAngle+(i-kInnerMenuItemCount)*kOuterMenuItemAngle)*M_PI/180);
                 }
-                
-                item.center = CGPointMake(nx, ny);
-                item.alpha = 1.0;
             }
-        } completion:^(BOOL finished) {
-            if (self.comBlk) {
-                self.comBlk();
+            else {
+                nx = _mOrigMenuItemCenter.x;
+                ny = _mOrigMenuItemCenter.y - (CGRectGetHeight(item.frame)+10)*(i+1);
             }
-        }];
-        
+            
+            item.center = CGPointMake(nx, ny);
+            item.alpha = 1.0;
+        }
+    } completion:^(BOOL finished) {
+        _mIsAnimationFinish = YES;
+        if (self.completeBlk) {
+            self.completeBlk(YES);
+        }
+    }];
+    
+    if (self.style == FBAwesomeMenuStyleCircle) {
         //--
         CABasicAnimation* innerLayerAnim = [CABasicAnimation animationWithKeyPath:@"path"];
         //    innerLayerAnim.fromValue = (__bridge id _Nullable)(self.innerLayerStartPath.CGPath);
@@ -180,32 +192,11 @@
         outertLayerAnim.fillMode = kCAFillModeForwards;
         [self.outerLayer addAnimation:outertLayerAnim forKey:@"outerLayerAnimation1"];
     }
-    else {
-        [UIView animateWithDuration:0.3 delay:0.1 options:UIViewAnimationOptionTransitionNone animations:^{
-            for (int i=0; i<self.menuItems.count; i++) {
-                FBAwesomeMenuItem* item = [self.menuItems objectAtIndex:i];
-                
-                CGFloat nx = _mOrigMenuItemCenter.x;
-                CGFloat ny = _mOrigMenuItemCenter.y - (CGRectGetHeight(item.frame)+10)*(i+1);
-                
-                CGPoint newCenter = CGPointMake(nx, ny);
-                item.center = newCenter;
-                item.alpha = 1.0;
-            }
-        } completion:^(BOOL finished) {
-            if (self.comBlk) {
-                self.comBlk();
-            }
-        }];
-    }
+    
 }
 
 
-- (void)hideMenuWithAnimCompleteBlock:(animCompleteBlock)completeBlk {
-    if (completeBlk) {
-        self.comBlk = [completeBlk copy];
-    }
-    
+- (void)hideMenu {
     
     [UIView animateWithDuration:0.3 animations:^{
         for (int i=0; i<self.menuItems.count; i++) {
@@ -214,8 +205,9 @@
             item.alpha = .0;
         }
     } completion:^(BOOL finished) {
-        if (self.comBlk) {
-            self.comBlk();
+        _mIsAnimationFinish = YES;
+        if (self.completeBlk) {
+            self.completeBlk(NO);
         }
     }];
     
@@ -237,9 +229,6 @@
         outertLayerAnim.fillMode = kCAFillModeForwards;
         [self.outerLayer addAnimation:outertLayerAnim forKey:@"outerLayerAnimation2"];
     }
-    else {
-        
-    }
 }
 
 
@@ -251,15 +240,12 @@
 
 
 
-//- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-//    if (self.hideWhenTapOutsideMenu) {
-//        
-//        __weak typeof(self) weakSelf = self;
-//        [self hideMenuWithAnimCompleteBlock:^{
-//            [weakSelf setHidden:YES];
-//        }];
-//    }
-//}
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    
+    if (self.hideWhenTapOutsideMenu && _mIsAnimationFinish) {
+        [self hideMenu];
+    }
+}
 
 
 @end
