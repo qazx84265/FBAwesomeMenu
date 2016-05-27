@@ -16,7 +16,6 @@
 		EC1E7C3B1CF7F1A0005D47F2 /* FBCrossButton.m in Sources */ = {isa = PBXBuildFile; fileRef = EC1E7C331CF7F1A0005D47F2 /* FBCrossButton.m */; };
 		EC1E7C3C1CF7F1A0005D47F2 /* FBHamburgerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = EC1E7C351CF7F1A0005D47F2 /* FBHamburgerButton.m */; };
 		EC1E7C3D1CF7F1A0005D47F2 /* FBAwesomeMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = EC1E7C381CF7F1A0005D47F2 /* FBAwesomeMenuItem.m */; };
-		EC1E7C3E1CF7F1A0005D47F2 /* FBAwesomeMenuVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EC1E7C3A1CF7F1A0005D47F2 /* FBAwesomeMenuVC.m */; };
 		EC1E7C411CF7F233005D47F2 /* CALayer+Animation.m in Sources */ = {isa = PBXBuildFile; fileRef = EC1E7C401CF7F233005D47F2 /* CALayer+Animation.m */; };
 		EC1E7C431CF7F332005D47F2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC1E7C421CF7F332005D47F2 /* QuartzCore.framework */; };
 		EC1E7C461CF7F3DD005D47F2 /* UIColor+Random.m in Sources */ = {isa = PBXBuildFile; fileRef = EC1E7C451CF7F3DD005D47F2 /* UIColor+Random.m */; };
@@ -42,8 +41,6 @@
 		EC1E7C351CF7F1A0005D47F2 /* FBHamburgerButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBHamburgerButton.m; sourceTree = "<group>"; };
 		EC1E7C371CF7F1A0005D47F2 /* FBAwesomeMenuItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBAwesomeMenuItem.h; sourceTree = "<group>"; };
 		EC1E7C381CF7F1A0005D47F2 /* FBAwesomeMenuItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBAwesomeMenuItem.m; sourceTree = "<group>"; };
-		EC1E7C391CF7F1A0005D47F2 /* FBAwesomeMenuVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBAwesomeMenuVC.h; sourceTree = "<group>"; };
-		EC1E7C3A1CF7F1A0005D47F2 /* FBAwesomeMenuVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBAwesomeMenuVC.m; sourceTree = "<group>"; };
 		EC1E7C3F1CF7F233005D47F2 /* CALayer+Animation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CALayer+Animation.h"; sourceTree = "<group>"; };
 		EC1E7C401CF7F233005D47F2 /* CALayer+Animation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CALayer+Animation.m"; sourceTree = "<group>"; };
 		EC1E7C421CF7F332005D47F2 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -136,8 +133,6 @@
 			children = (
 				EC1E7C371CF7F1A0005D47F2 /* FBAwesomeMenuItem.h */,
 				EC1E7C381CF7F1A0005D47F2 /* FBAwesomeMenuItem.m */,
-				EC1E7C391CF7F1A0005D47F2 /* FBAwesomeMenuVC.h */,
-				EC1E7C3A1CF7F1A0005D47F2 /* FBAwesomeMenuVC.m */,
 				EC1E7C4D1CF7F4EE005D47F2 /* FBAwesomeMenu.h */,
 				EC1E7C4E1CF7F4EE005D47F2 /* FBAwesomeMenu.m */,
 			);
@@ -224,7 +219,6 @@
 				EC1E7C4C1CF7F4B7005D47F2 /* DetailViewController.m in Sources */,
 				EC1E7C4F1CF7F4EE005D47F2 /* FBAwesomeMenu.m in Sources */,
 				EC1E7C1C1CF7F102005D47F2 /* main.m in Sources */,
-				EC1E7C3E1CF7F1A0005D47F2 /* FBAwesomeMenuVC.m in Sources */,
 				EC1E7C491CF7F4A0005D47F2 /* SettingViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
